@@ -23,7 +23,7 @@ jobs:
       run: |
         sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no jacob@23.123.211.20 << 'EOF'
         # Stop the current instance (if any)
-        screen -S food -X quit || true
+        screen -S hacklahoma-main -X quit || true
 
         # Pull the latest code
         cd ./hacklahoma-main
@@ -48,7 +48,7 @@ jobs:
       run: |
         sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no jacob@23.123.211.20 << 'EOF'
         # Stop the current instance (if any)
-        screen -S food-dev -X quit || true
+        screen -S hacklahoma-dev -X quit || true
 
         # Pull the latest code
         cd ./hacklahoma-dev
