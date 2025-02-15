@@ -1,5 +1,7 @@
 package tech.touchgrass.db;
 
+import tech.touchgrass.db.classes.user.UserDatabase;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -14,6 +16,8 @@ public class DatabaseManager {
     static {
         try {
             connection = DriverManager.getConnection(DATABASE_URL);
+
+            UserDatabase.initializeUserDatabase();
         } catch (SQLException e) {
             e.printStackTrace();
             throw new RuntimeException("Failed to connect to the database");
@@ -43,5 +47,9 @@ public class DatabaseManager {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public static Connection getConnection() {
+        return connection;
     }
 }
