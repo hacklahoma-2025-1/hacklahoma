@@ -26,6 +26,9 @@ public class Main {
         logger.info("Creating Static Contexts");
         server.createContext("/", new tech.touchgrass.endpoints.Index());
 
+        logger.info("Creating API Contexts");
+        server.createContext("/api/createUser", new tech.touchgrass.endpoints.api.CreateUser());
+
         logger.info("Starting HttpServer");
         server.start();
         logger.info("HttpServer Started");
