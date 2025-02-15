@@ -1,0 +1,59 @@
+name: Deploy to Server
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+  workflow_dispatch:
+
+jobs:
+  deploy-prod:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Install sshpass
+      run: sudo apt-get update && sudo apt-get install -y sshpass
+
+    - name: Deploy to Production Server
+      run: |
+        sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no jacob@23.123.211.20 << 'EOF'
+        # Stop the current instance (if any)
+        screen -S food -X quit || true
+
+        # Pull the latest code
+        cd ./hacklahoma-main
+
+        # Build the project
+        bash start.sh
+        
+        EOF
+
+  deploy-dev:
+    if: github.ref == 'refs/heads/dev'
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Install sshpass
+      run: sudo apt-get update && sudo apt-get install -y sshpass
+
+    - name: Deploy to Development Server
+      run: |
+        sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no jacob@23.123.211.20 << 'EOF'
+        # Stop the current instance (if any)
+        screen -S food-dev -X quit || true
+
+        # Pull the latest code
+        cd ./hacklahoma-dev
+
+        # Build the project
+        bash start.sh
+        
+        EOF
