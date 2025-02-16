@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import tech.touchgrass.db.classes.user.User;
 import tech.touchgrass.db.classes.user.UserDatabase;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -21,7 +22,7 @@ public class CreateUser implements HttpHandler {
     public void handle(HttpExchange exchange) throws IOException {
         if ("POST".equals(exchange.getRequestMethod())) {
             try (InputStream is = exchange.getRequestBody()) {
-                String requestBody = new String(is.readAllBytes(), StandardCharsets.UTF_8);
+                String requestBody = readInputStream(is);
                 JSONObject json = new JSONObject(requestBody);
 
                 String email = json.getString("email");
@@ -46,6 +47,16 @@ public class CreateUser implements HttpHandler {
         } else {
             sendResponse(exchange, 405, "Method not allowed");
         }
+    }
+
+    private String readInputStream(InputStream is) throws IOException {
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        byte[] data = new byte[1024];
+        int nRead;
+        while ((nRead = is.read(data, 0, data.length)) != -1) {
+            buffer.write(data, 0, nRead);
+        }
+        return new String(buffer.toByteArray(), StandardCharsets.UTF_8);
     }
 
     private void sendResponse(HttpExchange exchange, int statusCode, String message) throws IOException {
